@@ -65,7 +65,6 @@ ORDER BY 1,2
 SELECT SUM(new_cases) AS tot_cases, SUM(CAST(new_deaths AS INT)) AS tot_deaths, (SUM(CAST(new_deaths AS INT))/SUM(new_cases))*100 as DeathPerc
 FROM PortfolioProject..[Covid Deaths]
 WHERE continent IS NOT NULL
---GROUP BY date
 ORDER BY 1,2
 
 
@@ -81,15 +80,14 @@ JOIN PortfolioProject..CovidVaccinations vac
 	ON dea.location = vac.location
 	AND dea.date = vac.date
 WHERE dea.continent IS NOT NULL
---ORDER BY 2, 3
 )
 SELECT *, (Cum_Vaccinations/Population)*100
 FROM PopvsVac
 
 -- Population vs Vaccinations using Temp Table
-IF OBJECT_ID('tempdb.dbo.#VaccinationPerc', 'U') IS NOT NULL  -- this syntax upto SQL Server 2014
+IF OBJECT_ID('tempdb.dbo.#VaccinationPerc', 'U') IS NOT NULL  -- this syntax applicable for only upto SQL Server 2014
 	DROP TABLE #VaccinationPerc
--- " DROP TABLE IF EXISTS dbo.#VaccinationPerc " for SQL Server 2016 & up
+-- " DROP TABLE IF EXISTS dbo.#VaccinationPerc " for SQL Server 2016 & above
 CREATE TABLE #VaccinationPerc
 (
 Continent nvarchar(255), 
@@ -108,7 +106,6 @@ JOIN PortfolioProject..CovidVaccinations vac
 	ON dea.location = vac.location
 	AND dea.date = vac.date
 WHERE dea.continent IS NOT NULL
---ORDER BY 2, 3
 
 SELECT *, (Cum_Vaccinations/Population)*100 AS VaccinatedPopulationPerc
 FROM #VaccinationPerc
@@ -128,7 +125,6 @@ JOIN PortfolioProject..CovidVaccinations vac
 	ON dea.location = vac.location
 	AND dea.date = vac.date
 WHERE dea.continent IS NOT NULL
---ORDER BY 2, 3
 
 SELECT *
 FROM VaccinationPerc
